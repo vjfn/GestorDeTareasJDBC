@@ -1,9 +1,6 @@
 package org.example.domain;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -15,6 +12,7 @@ public class TareaDAOImp implements TareaDAO {
     private final static String querryUpdate = "";
     private final static String querryDelete = "";
     private final static String querrySave = "";
+    private final static String queryLoadAllByResponsable = "SELECT * FROM tarea WHERE usuario_id=?";
 
     public TareaDAOImp(Connection c){
         connection = c;
@@ -44,8 +42,21 @@ public class TareaDAOImp implements TareaDAO {
     }
 
     @Override
-    public ArrayList<Tarea> loadAllByResponsable(String responsable) {
-        return null;
+    public ArrayList<Tarea> loadAllByResponsable(Long responsable) {
+
+        var salida = new ArrayList<Tarea>();
+        try (PreparedStatement pst = connection.prepareStatement(queryLoadAllByResponsable)){
+            pst.setLong(1,responsable);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                salida.add((new TareaAdapter()).loadFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return salida;
+
     }
 
     @Override

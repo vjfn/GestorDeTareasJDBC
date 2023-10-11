@@ -37,7 +37,8 @@ public class Ventana extends JFrame {
 
 //      var tareas = Database.getAllTarea();
         var dao = new TareaDAOImp(DBConnection.getConnection());
-        var tareas = dao.loadAll();
+        var tareas = dao.loadAllByResponsable(1L);
+
         fillTable(tareas);
 
     }

@@ -9,6 +9,7 @@ public class TareaDAOImp implements TareaDAO {
     private Connection connection;
 
     private final static String queryLoadAll = "SELECT * FROM tarea";
+    private final static String queryLoad = "select * from tarea where id";
     private final static String querryUpdate = "";
     private final static String querryDelete = "";
     private final static String querrySave = "";
@@ -21,7 +22,24 @@ public class TareaDAOImp implements TareaDAO {
 
     @Override
     public Tarea load(Long id) {
-        return null;
+        var salida = new Tarea();
+        try (var pst = connection.prepareStatement(queryLoad)){
+            pst.setLong(1,id);
+            var rs = pst.executeQuery();
+            if (rs.next()){
+                salida = (new TareaAdapter()).loadFromResultSet(rs);
+//                La línea de arriba hace lo de abajo
+//                salida.setId( rs.getLong("id") );
+//                salida.setTitulo( rs.getString("titulo") );
+//                salida.setPrioridad( rs.getString("prioridad") );
+//                salida.setUsuario_id( rs.getLong("usuario_id") );
+//                salida.setCategoria( rs.getString("categoria") );
+//                salida.setDescripcion( rs.getString("descripcion") );
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

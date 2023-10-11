@@ -4,6 +4,8 @@ import org.example.domain.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 public class Ventana extends JFrame {
@@ -41,6 +43,9 @@ public class Ventana extends JFrame {
 
         fillTable(tareas);
 
+        table1.addPropertyChangeListener(evt -> {
+
+        });
     }
 
     private void fillTable(ArrayList<Tarea> tareas) {

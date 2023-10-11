@@ -1,8 +1,6 @@
 package org.example.ui;
 
-import org.example.domain.Database;
-import org.example.domain.Tarea;
-import org.example.domain.TareaAdapter;
+import org.example.domain.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,11 +10,12 @@ public class Ventana extends JFrame {
     private JPanel panel1;
     private JLabel info;
     private JTable table1;
+    private JPanel panel;
 
     DefaultTableModel data;
 
     public Ventana(){
-        this.setContentPane(panel1);
+        this.setContentPane(panel);
         setSize(600,400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Acceso con JDBC");
@@ -36,7 +35,9 @@ public class Ventana extends JFrame {
         //table1.doLayout();
         //
 
-        var tareas = Database.getAllTarea();
+//      var tareas = Database.getAllTarea();
+        var dao = new TareaDAOImp(DBConnection.getConnection());
+        var tareas = dao.loadAll();
         fillTable(tareas);
 
     }
@@ -52,4 +53,7 @@ public class Ventana extends JFrame {
     public void load(){
         setVisible(true);
     }
+
+
 }
+

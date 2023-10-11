@@ -1,8 +1,13 @@
 package org.example.domain;
 
+import org.example.Main;
+
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class DBConnection {
@@ -14,9 +19,25 @@ public class DBConnection {
     static{
         logger = Logger.getLogger(Database.class.getName());
 
-        String url = "jdbc:mysql://localhost:3306/ad";
-        String user = "root";
-        String password = "";
+        String url;
+        String user;
+        String password;
+
+        var cfg = new Properties();
+
+        try {
+            cfg.load(Main.class.getClassLoader().getResourceAsStream("ddbb.cfg"));
+            logger.info("Configuración Cargada");
+            url= "jdbc:mysql://"+cfg.getProperty("host")+":"+cfg.getProperty("port")+"/"+cfg.getProperty("dbname");
+            logger.info(url);
+            user = cfg.getProperty("user");
+            password = cfg.getProperty("pass");
+        } catch (IOException e) {
+            logger.info("Error procesando consiguracion");
+            throw new RuntimeException(e);
+        }
+
+
         try {
             connection = DriverManager.getConnection(url,user,password);
             logger.info("Successful connection to database");

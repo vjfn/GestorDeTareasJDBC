@@ -1,5 +1,6 @@
 package org.example.domain.Tarea;
 
+import org.example.domain.usuario.Usuario;
 import org.example.domain.usuario.UsuarioDAOImp;
 
 import java.sql.*;
@@ -41,6 +42,8 @@ public class TareaDAOImp implements TareaDAO {
                 salida.setCategoria(rs.getString("categoria"));
                 salida.setDescripcion(rs.getString("descripcion"));
 //                salida.setUsuario( daoUsuario.cargarUsuario(rs.getLong("usuario_id")) );
+
+                salida.setUsuario(( new UsuarioDAOImp(connection)).load(salida.getUsuario_id()));
             }
 
         } catch (SQLException e) {
@@ -57,7 +60,9 @@ public class TareaDAOImp implements TareaDAO {
             ResultSet rs = st.executeQuery(queryLoadAll);
 
             while(rs.next()){
-                salida.add( (new TareaAdapter()).loadFromResultSet(rs) );
+                Tarea t = (new TareaAdapter()).loadFromResultSet(rs);
+                t.setUsuario( (new UsuarioDAOImp(connection).load(t.getUsuario_id())) );
+                salida.add( t );
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

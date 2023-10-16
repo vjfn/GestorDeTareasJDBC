@@ -1,11 +1,12 @@
 package org.example.domain.usuario;
 
+import lombok.extern.java.Log;
 import org.example.domain.usuario.Usuario;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
+@Log
 public class UsuarioDAOImp implements UsuarioDAO {
 
     private Connection connection;
@@ -14,10 +15,13 @@ public class UsuarioDAOImp implements UsuarioDAO {
         connection = conn;
     }
 
+
     @Override
     public Usuario load(Long id) {
         var salida = new Usuario();
         try (var pst = connection.prepareStatement(QUERY_LOAD)) {
+            log.info(QUERY_LOAD);
+            log.info(id.toString());
             pst.setLong(1, id);
             var rs = pst.executeQuery();
             if (rs.next()) {
@@ -33,6 +37,7 @@ public class UsuarioDAOImp implements UsuarioDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        log.info(salida.toString());
         return salida;
     }
 

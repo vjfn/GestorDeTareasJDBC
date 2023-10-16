@@ -1,11 +1,13 @@
 package org.example.ui;
 
 import org.example.domain.*;
+import org.example.domain.Tarea.Tarea;
+import org.example.domain.Tarea.TareaAdapter;
+import org.example.domain.Tarea.TareaDAOImp;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 public class Ventana extends JFrame {
@@ -15,6 +17,8 @@ public class Ventana extends JFrame {
     private JPanel panel;
 
     DefaultTableModel data;
+
+    ArrayList<Tarea> tareas = new ArrayList<>();
 
     public Ventana(){
         this.setContentPane(panel);
@@ -39,13 +43,29 @@ public class Ventana extends JFrame {
 
 //      var tareas = Database.getAllTarea();
         var dao = new TareaDAOImp(DBConnection.getConnection());
-        var tareas = dao.loadAllByResponsable(1L);
+        tareas = dao.loadAllByResponsable(1L);
 
         fillTable(tareas);
 
-        table1.addPropertyChangeListener(evt -> {
+        table1.getSelectionModel().addListSelectionListener ( ev ->showDetails(ev) );
 
-        });
+//        table1.addPropertyChangeListener(evt -> {
+//
+//        });
+    }
+
+//    private Object showDetails(ListSelectionEvent ev) {
+//        if (!ev.getValueIsAdjusting()){
+//            Tarea selected = tareas.get(table1.getSelectedRow());
+//            info.setText(selected.toString());
+//        }
+//    }
+
+    private void showDetails(ListSelectionEvent ev) {
+        if (!ev.getValueIsAdjusting()){
+            Tarea selected = tareas.get(table1.getSelectedRow());
+            info.setText(selected.toString());
+        }
     }
 
     private void fillTable(ArrayList<Tarea> tareas) {

@@ -1,4 +1,6 @@
-package org.example.domain;
+package org.example.domain.Tarea;
+
+import org.example.domain.usuario.UsuarioDAOImp;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,6 +9,8 @@ import java.util.ArrayList;
 public class TareaDAOImp implements TareaDAO {
 
     private Connection connection;
+
+
 
     private final static String queryLoadAll = "SELECT * FROM tarea";
     private final static String queryLoad = "select * from tarea where id";
@@ -23,23 +27,26 @@ public class TareaDAOImp implements TareaDAO {
     @Override
     public Tarea load(Long id) {
         var salida = new Tarea();
-        try (var pst = connection.prepareStatement(queryLoad)){
-            pst.setLong(1,id);
+        try (var pst = connection.prepareStatement(queryLoad)) {
+            pst.setLong(1, id);
             var rs = pst.executeQuery();
-            if (rs.next()){
-                salida = (new TareaAdapter()).loadFromResultSet(rs);
+            if (rs.next()) {
+//                salida = (new TareaAdapter()).loadFromResultSet(rs);
 //                La línea de arriba hace lo de abajo
-//                salida.setId( rs.getLong("id") );
-//                salida.setTitulo( rs.getString("titulo") );
-//                salida.setPrioridad( rs.getString("prioridad") );
-//                salida.setUsuario_id( rs.getLong("usuario_id") );
-//                salida.setCategoria( rs.getString("categoria") );
-//                salida.setDescripcion( rs.getString("descripcion") );
+                salida = new Tarea();
+                salida.setId(rs.getLong("id"));
+                salida.setTitulo(rs.getString("titulo"));
+                salida.setPrioridad(rs.getString("prioridad"));
+                salida.setUsuario_id(rs.getLong("usuario_id"));
+                salida.setCategoria(rs.getString("categoria"));
+                salida.setDescripcion(rs.getString("descripcion"));
+//                salida.setUsuario( daoUsuario.cargarUsuario(rs.getLong("usuario_id")) );
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return salida;
     }
 
     @Override

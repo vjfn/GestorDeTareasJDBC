@@ -1,6 +1,7 @@
 package org.example.domain;
 
-import com.mysql.cj.log.Log;
+import org.example.domain.Tarea.Tarea;
+import org.example.domain.Tarea.TareaAdapter;
 
 import java.sql.*;
 import java.util.ArrayList;

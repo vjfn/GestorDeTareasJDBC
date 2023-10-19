@@ -19,6 +19,11 @@ public class Ventana extends JFrame {
     private JTable table1;
     private JPanel panel;
     private JButton button1;
+    private JTextField txtDescripcion;
+    private JTextField txtCategoria;
+    private JComboBox comboPrioridad;
+    private JTextField txtTarea;
+    private JComboBox comboCategoria;
 
     DefaultTableModel data;
 
@@ -53,23 +58,27 @@ public class Ventana extends JFrame {
         table1.getSelectionModel().addListSelectionListener ( ev ->showDetails(ev) );
 
         button1.addActionListener(e -> {
-            Tarea t = new Tarea();
-            Usuario u = (new UsuarioDAOImp(DBConnection.getConnection())).load(1L);
-            t.setUsuario(u);
-            t.setUsuario_id(u.getId());
-            t.setCategoria("categoria");
-            t.setDescripcion("descripcion");
-            t.setTitulo("titulo");
-            t.setPrioridad("ALTA");
-            t = daoTarea.save(t);
-
-            tareas = daoTarea.loadAll();
-            fillTable(tareas);
+            guardarTarea();
 
         });
 //        table1.addPropertyChangeListener(evt -> {
 //
 //        });
+    }
+
+    private void guardarTarea() {
+        Tarea t = new Tarea();
+        Usuario u = (new UsuarioDAOImp(DBConnection.getConnection())).load(1L);
+        t.setUsuario(u);
+        t.setUsuario_id(u.getId());
+        t.setCategoria((String) comboCategoria.getSelectedItem());
+        t.setDescripcion(txtDescripcion.getText());
+        t.setTitulo(txtTarea.getText());
+        t.setPrioridad((String) comboPrioridad.getSelectedItem());
+        t = daoTarea.save(t);
+
+        tareas = daoTarea.loadAll();
+        fillTable(tareas);
     }
 
 //    private Object showDetails(ListSelectionEvent ev) {

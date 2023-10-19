@@ -1,10 +1,13 @@
 package org.example.domain.Tarea;
 
+import lombok.extern.java.Log;
 import org.example.domain.usuario.Usuario;
 import org.example.domain.usuario.UsuarioDAOImp;
 
 import java.sql.*;
 import java.util.ArrayList;
+
+@Log
 
 
 public class TareaDAOImp implements TareaDAO {
@@ -15,9 +18,9 @@ public class TareaDAOImp implements TareaDAO {
 
     private final static String queryLoadAll = "SELECT * FROM tarea";
     private final static String queryLoad = "select * from tarea where id";
-    private final static String querryUpdate = "";
-    private final static String querryDelete = "";
-    private final static String querrySave = "";
+    private final static String queryUpdate = "";
+    private final static String queryDelete = "";
+    private final static String querySave = "insert into tarea(titulo, prioridad, usuario_id, categoria, descripcion) values(?,?,?,?,?)";
     private final static String queryLoadAllByResponsable = "SELECT * FROM tarea WHERE usuario_id=?";
 
     public TareaDAOImp(Connection c){
@@ -75,7 +78,7 @@ public class TareaDAOImp implements TareaDAO {
     public ArrayList<Tarea> loadAllByResponsable(Long responsable) {
 
         var salida = new ArrayList<Tarea>();
-        try (PreparedStatement pst = connection.prepareStatement(queryLoadAllByResponsable)){
+        try (PreparedStatement pst = connection.prepareStatement(querySave)){
             pst.setLong(1,responsable);
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
@@ -91,7 +94,39 @@ public class TareaDAOImp implements TareaDAO {
 
     @Override
     public Tarea save(Tarea t) {
-        return null;
+
+        Tarea salida = null;
+
+        if(t.getUsuario()!=null){
+
+
+            try (PreparedStatement pst = connection.prepareStatement(querySave,Statement.RETURN_GENERATED_KEYS)){
+                log.info(querySave);
+                log.info(t.toString());
+                pst.setString(1,t.getTitulo());
+                pst.setString(2,t.getPrioridad());
+                pst.setLong(3,t.getUsuario().getId());
+                pst.setString(4,t.getCategoria());
+                pst.setString(5,t.getDescripcion());
+
+                int result = pst.executeUpdate();
+
+                if (result == 1){
+
+                    ResultSet rs = pst.getGeneratedKeys();
+                    rs.next();
+                    salida = t;
+                    salida.setId(rs.getLong(1));
+
+                    log.info("Tarea insertada"+ salida.getId());
+                }
+
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return salida;
     }
 
     @Override

@@ -36,7 +36,7 @@ public class TareaAdapter {
                 String.valueOf( tarea.getId()),
                 tarea.getTitulo(),
                 tarea.getPrioridad(),
-                String.valueOf(tarea.getUsuario_id()),
+                (tarea.getUsuario()!=null)?tarea.getUsuario().getNombre():"-",
                 tarea.getCategoria(),
                 tarea.getDescripcion()};
     }

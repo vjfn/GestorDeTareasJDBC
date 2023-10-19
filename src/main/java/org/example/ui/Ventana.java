@@ -4,6 +4,8 @@ import org.example.domain.*;
 import org.example.domain.Tarea.Tarea;
 import org.example.domain.Tarea.TareaAdapter;
 import org.example.domain.Tarea.TareaDAOImp;
+import org.example.domain.usuario.Usuario;
+import org.example.domain.usuario.UsuarioDAOImp;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -11,10 +13,12 @@ import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 public class Ventana extends JFrame {
+    private final TareaDAOImp daoTarea = new TareaDAOImp(DBConnection.getConnection());
     private JPanel panel1;
     private JLabel info;
     private JTable table1;
     private JPanel panel;
+    private JButton button1;
 
     DefaultTableModel data;
 
@@ -42,13 +46,27 @@ public class Ventana extends JFrame {
         //
 
 //      var tareas = Database.getAllTarea();
-        var dao = new TareaDAOImp(DBConnection.getConnection());
-        tareas = dao.loadAllByResponsable(1L);
+        tareas = daoTarea.loadAll();
 
         fillTable(tareas);
 
         table1.getSelectionModel().addListSelectionListener ( ev ->showDetails(ev) );
 
+        button1.addActionListener(e -> {
+            Tarea t = new Tarea();
+            Usuario u = (new UsuarioDAOImp(DBConnection.getConnection())).load(1L);
+            t.setUsuario(u);
+            t.setUsuario_id(u.getId());
+            t.setCategoria("categoria");
+            t.setDescripcion("descripcion");
+            t.setTitulo("titulo");
+            t.setPrioridad("ALTA");
+            t = daoTarea.save(t);
+
+            tareas = daoTarea.loadAll();
+            fillTable(tareas);
+
+        });
 //        table1.addPropertyChangeListener(evt -> {
 //
 //        });

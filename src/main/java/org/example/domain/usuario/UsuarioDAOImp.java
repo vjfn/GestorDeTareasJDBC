@@ -29,7 +29,7 @@ public class UsuarioDAOImp implements UsuarioDAO {
 //                La línea de arriba hace lo de abajo
                 salida = new Usuario();
                 salida.setId(rs.getLong("id"));
-                salida.setNombre(rs.getString("mombre"));
+                salida.setNombre(rs.getString("nombre"));
                 salida.setEmail(rs.getString("email"));
 //                salida.setUsuario( daoUsuario.cargarUsuario(rs.getLong("usuario_id")) );
             }
